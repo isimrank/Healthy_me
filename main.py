@@ -76,17 +76,17 @@ User:
 
 Return JSON EXACTLY in this format (no extra text, no markdown):
 
-{
+{{
 "breakfast": "...",
 "lunch": "...",
 "dinner": "...",
 "totalCalories": 0,
-"nutrients": {
+"nutrients": {{
     "protein_g": 0,
     "carbs_g": 0,
     "fiber_g": 0
-}
-}
+}}
+}}
 """
 
     text = ""
