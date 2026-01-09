@@ -19,12 +19,20 @@ class RecommendationRequest(BaseModel):
     gender: Optional[str] = None
     height: Optional[int] = None
     weight: Optional[int] = None
+    
+class Nutrients(BaseModel):
+    protein_g: int = Field(ge=0, le=500)
+    carbs_g: int = Field(ge=0, le=800)
+    fiber_g: int = Field(ge=0, le=200)
+
 
 class RecommendationResponse(BaseModel):
     breakfast: str
     lunch: str
     dinner: str
     totalCalories: int = Field(ge=0, le=6000)
+    nutrients: Nutrients
+
 
 @app.get("/")
 def root():
@@ -47,9 +55,12 @@ def recommendations(req: RecommendationRequest):
     client = OpenAI(api_key=api_key)
 
     system_msg = (
-        "You are a nutrition assistant. Respect dietary preferences and avoid allergens. "
-        "Provide practical, balanced meals. Do not provide medical diagnosis."
-    )
+    "You are a nutrition assistant. Respect dietary preferences and avoid allergens. "
+    "Provide practical, balanced meals. Do not provide medical diagnosis. "
+    "Ensure nutrient values are realistic and consistent with calories "
+    "(protein ≈ 4 kcal/g, carbs ≈ 4 kcal/g, fiber ≈ 2 kcal/g)."
+)
+
 
     user_msg = f"""
 Create a 1-day meal plan.
@@ -65,12 +76,17 @@ User:
 
 Return JSON EXACTLY in this format (no extra text, no markdown):
 
-{{
+{
 "breakfast": "...",
 "lunch": "...",
 "dinner": "...",
-"totalCalories": 0
-}}
+"totalCalories": 0,
+"nutrients": {
+    "protein_g": 0,
+    "carbs_g": 0,
+    "fiber_g": 0
+}
+}
 """
 
     text = ""
