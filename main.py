@@ -1,11 +1,11 @@
-import os
 import json
+import os
 from typing import Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field
 from openai import OpenAI
+from pydantic import BaseModel, Field
 
 load_dotenv()
 
@@ -66,17 +66,18 @@ User:
 Return JSON EXACTLY in this format (no extra text, no markdown):
 
 {{
-  "breakfast": "...",
-  "lunch": "...",
-  "dinner": "...",
-  "totalCalories": 0
+"breakfast": "...",
+"lunch": "...",
+"dinner": "...",
+"totalCalories": 0
 }}
 """
 
     text = ""
     try:
         r = client.responses.create(
-            model="gpt-5.2-mini",
+            model="gpt-4.1-mini"
+,
             input=[
                 {"role": "system", "content": system_msg},
                 {"role": "user", "content": user_msg},
@@ -98,4 +99,3 @@ Return JSON EXACTLY in this format (no extra text, no markdown):
         raise HTTPException(status_code=500, detail=f"AI did not return valid JSON. Raw: {text[:300]}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
